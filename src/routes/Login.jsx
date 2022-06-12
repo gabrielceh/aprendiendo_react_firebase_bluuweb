@@ -7,6 +7,8 @@ import { formValidate } from '../utils/formValidate';
 
 import FormError from '../components/FormError';
 import FormInput from '../components/FormInput';
+import Title from '../components/Title';
+import Button from '../components/Button';
 
 const Login = () => {
   const { loginUser } = useContext(UserContext);
@@ -61,33 +63,38 @@ const Login = () => {
 
   return (
     <>
-      <h1>Login</h1>
       <form action="" onSubmit={handleSubmit(onSubmit)}>
         {/* <FormError error={errors.firebase}></FormError> */}
-
+        <Title text="Login" />
         <FormInput
           type="email"
-          placeholder="Ingrese email"
+          placeholder="ex: juan@correo.com"
+          label="Ingresa tu email"
+          error={errors.email}
           //https://react-hook-form.com/api/useform/register
           {...register('email', {
             required,
             pattern: patternEmail,
           })}
-        ></FormInput>
-        <FormError error={errors.email}></FormError>
+        >
+          <FormError error={errors.email}></FormError>
+        </FormInput>
 
         <FormInput
           type="password"
-          placeholder="Ingrese password"
+          placeholder=" "
+          label="Ingresa tu password"
+          error={errors.password}
           {...register('password', {
             required,
             minLength: minLength_6,
             validate: validateTrim,
           })}
-        ></FormInput>
-        <FormError error={errors.password}></FormError>
+        >
+          <FormError error={errors.password}></FormError>
+        </FormInput>
 
-        <button type="submit">Iniciar sesión</button>
+        <Button text="Iniciar sesión" type="submit" />
       </form>
     </>
   );

@@ -7,6 +7,8 @@ import { formValidate } from '../utils/formValidate';
 
 import FormError from '../components/FormError';
 import FormInput from '../components/FormInput';
+import Title from '../components/Title';
+import Button from '../components/Button';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,9 +23,9 @@ const Register = () => {
     setError,
   } = useForm({
     defaultValues: {
-      email: 'gabito@gmail.com',
-      password: '123456',
-      repassword: '123456',
+      // email: 'gabito@gmail.com',
+      // password: '123456',
+      // repassword: '123456',
     },
   });
 
@@ -65,19 +67,23 @@ const Register = () => {
 
   return (
     <>
-      <h1>Register</h1>
       {/* errores personalizados para firebase... no los trae firebase, fueron hechos desde cero */}
       {/* {errors.firebase && <p>{errors.firebase.message}</p>} */}
       <form action="" onSubmit={handleSubmit(onSubmit)}>
+        <Title text="Register" />
         <FormInput
           type="email"
-          placeholder="Ingrese email"
+          placeholder="ex: juan@correo.com"
+          label="Tu email"
+          error={errors.email}
           //https://react-hook-form.com/api/useform/register
           {...register('email', {
             required,
             pattern: patternEmail,
           })}
-        ></FormInput>
+        >
+          <FormError error={errors.email}></FormError>
+        </FormInput>
 
         {/* <input
           type="email"
@@ -89,17 +95,20 @@ const Register = () => {
           })}
         /> */}
         {/* {errors.email && <p>{errors.email.message}</p>} */}
-        <FormError error={errors.email}></FormError>
 
         <FormInput
           type="password"
-          placeholder="Ingrese password"
+          placeholder=" "
+          label="Tu password"
+          error={errors.password}
           {...register('password', {
             required,
             minLength: minLength_6,
             validate: validateTrim,
           })}
-        ></FormInput>
+        >
+          <FormError error={errors.password}></FormError>
+        </FormInput>
         {/* <input
           type="password"
           placeholder="Ingrese password"
@@ -110,20 +119,22 @@ const Register = () => {
           })}
         /> */}
         {/* {errors.password && <p>{errors.password.message}</p>} */}
-        <FormError error={errors.password}></FormError>
 
         <FormInput
           type="password"
-          placeholder="Repita su password"
+          placeholder=" "
+          label="Confirmar su password"
+          error={errors.repassword}
           {...register('repassword', {
             required,
             validate: validateEquals(getValues('password')),
           })}
-        ></FormInput>
+        >
+          <FormError error={errors.repassword}></FormError>
+        </FormInput>
         {/* {errors.repassword && <p>{errors.repassword.message}</p>} */}
-        <FormError error={errors.repassword}></FormError>
 
-        <button type="submit">Registrar</button>
+        <Button text="Registrar" type="submit" />
       </form>
     </>
   );
