@@ -15,11 +15,11 @@ export const formValidate = () => {
     validateTrim: {
       trim: (value) => (!value.trim() ? 'Campo vacio. Escribe algo' : true),
     },
-    validateEquals(getValues) {
+    validateEquals(valueField) {
       return {
         // https://react-hook-form.com/api/useform/getvalues
-        equals: (value) => value === getValues('password') || 'No coincien las contraseñas',
-        trim: (value) => (!value.trim() ? 'Escribe algo' : true),
+        equals: (value) => value === valueField || 'No coincien las contraseñas',
+        trim: (value) => (!value.trim() ? 'Campo vacio. Escribe algo' : true),
       };
     },
   };

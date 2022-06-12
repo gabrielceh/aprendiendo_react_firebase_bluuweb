@@ -38,8 +38,9 @@ const Login = () => {
       //para saber los errores
       console.log(error.code);
       // alert('Este email ya está registrado');
-      setError('firebase', {
-        message: erroresFirebase(error.code),
+      const { code, message } = erroresFirebase(error.code);
+      setError(code, {
+        message,
       });
     }
   };
@@ -62,7 +63,7 @@ const Login = () => {
     <>
       <h1>Login</h1>
       <form action="" onSubmit={handleSubmit(onSubmit)}>
-        <FormError error={errors.firebase}></FormError>
+        {/* <FormError error={errors.firebase}></FormError> */}
 
         <FormInput
           type="email"

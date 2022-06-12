@@ -47,6 +47,7 @@ const Register = () => {
   const onSubmit = async (data) => {
     const { email, password } = data;
     console.log(email, password);
+
     try {
       await registerUser(email, password);
       console.log('Usuario creado');
@@ -55,8 +56,9 @@ const Register = () => {
       //para saber los errores
       console.log(error.code);
       // alert('Este email ya está registrado');
-      setError('firebase', {
-        message: erroresFirebase(error.code),
+      const { code, message } = erroresFirebase(error.code);
+      setError(code, {
+        message,
       });
     }
   };
@@ -66,7 +68,6 @@ const Register = () => {
       <h1>Register</h1>
       {/* errores personalizados para firebase... no los trae firebase, fueron hechos desde cero */}
       {/* {errors.firebase && <p>{errors.firebase.message}</p>} */}
-      <FormError error={errors.firebase}></FormError>
       <form action="" onSubmit={handleSubmit(onSubmit)}>
         <FormInput
           type="email"
@@ -116,7 +117,7 @@ const Register = () => {
           placeholder="Repita su password"
           {...register('repassword', {
             required,
-            validate: validateEquals(getValues),
+            validate: validateEquals(getValues('password')),
           })}
         ></FormInput>
         {/* {errors.repassword && <p>{errors.repassword.message}</p>} */}
