@@ -1,5 +1,7 @@
 import React from 'react';
 
+//Este componente tiene las clases de tailwind con https://flowbite.com/docs/components/buttons/
+
 function Button({ text, type }) {
   return (
     <button

@@ -1,5 +1,7 @@
 import React, { forwardRef } from 'react';
 
+//Este componente tiene las clases de tailwind con https://flowbite.com/docs/components/forms/
+
 const FormInput = forwardRef(
   ({ type, placeholder, onChange, onBlur, name, label, error, children }, ref) => {
     const errorClassLabel = error
