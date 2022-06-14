@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { UserContext } from '../context/UserProvider';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -9,8 +9,11 @@ import FormError from '../components/FormError';
 import FormInput from '../components/FormInput';
 import Title from '../components/Title';
 import Button from '../components/Button';
+import ButtonLoading from '../components/ButtonLoading';
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
+
   const { loginUser } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -20,51 +23,32 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm({
-    defaultValues: {
-      email: 'gabito@gmail.com',
-      password: '123456',
-    },
-  });
+  } = useForm();
 
   const { required, patternEmail, minLength_6, validateTrim } = formValidate();
 
   const onSubmit = async (data) => {
     const { email, password } = data;
-    console.log(email, password);
+    setLoading(true);
     try {
       await loginUser(email, password);
-      console.log('Sesión iniciada');
       navigate('/');
     } catch (error) {
       //para saber los errores
-      console.log(error.code);
-      // alert('Este email ya está registrado');
+      // console.log(error.code);
+      console.error('error');
       const { code, message } = erroresFirebase(error.code);
       setError(code, {
         message,
       });
+    } finally {
+      setLoading(false);
     }
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   console.log(`procesando: ${email} - ${password}`);
-  //   try {
-  //     await loginUser(email, password);
-  //     console.log('Sesion iniciada');
-  //     navigate('/');
-  //   } catch (error) {
-  //     //para saber los errores
-  //     console.log(error.code);
-  //     // alert('Este email ya no está registrado');
-  //   }
-  // };
 
   return (
     <>
       <form action="" onSubmit={handleSubmit(onSubmit)}>
-        {/* <FormError error={errors.firebase}></FormError> */}
         <Title text="Login" />
         <FormInput
           type="email"
@@ -93,8 +77,7 @@ const Login = () => {
         >
           <FormError error={errors.password}></FormError>
         </FormInput>
-
-        <Button text="Iniciar sesión" type="submit" />
+        <Button text="Iniciar sesión" type="submit" loading={loading} />
       </form>
     </>
   );

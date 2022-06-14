@@ -14,7 +14,7 @@ const Navbar = () => {
   const handleClickLogOut = async (e) => {
     try {
       await signOutUser();
-      console.log('sesion cerrada');
+      // console.log('sesion cerrada');
     } catch (error) {
       console.log(error.code);
     }
@@ -78,7 +78,7 @@ const Navbar = () => {
               </button>
             </div>
             <div className="hidden w-full md:block md:w-auto " id="mobile-menu-4" ref={menuRef}>
-              <ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
+              <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
                 <li>
                   <NavLink
                     to="/"

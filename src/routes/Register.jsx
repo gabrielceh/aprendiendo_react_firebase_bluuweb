@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { UserContext } from '../context/UserProvider';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -9,8 +9,11 @@ import FormError from '../components/FormError';
 import FormInput from '../components/FormInput';
 import Title from '../components/Title';
 import Button from '../components/Button';
+import ButtonLoading from '../components/ButtonLoading';
 
 const Register = () => {
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { registerUser } = useContext(UserContext);
 
@@ -21,13 +24,7 @@ const Register = () => {
     formState: { errors },
     getValues,
     setError,
-  } = useForm({
-    defaultValues: {
-      // email: 'gabito@gmail.com',
-      // password: '123456',
-      // repassword: '123456',
-    },
-  });
+  } = useForm();
 
   const { required, patternEmail, minLength_6, validateTrim, validateEquals } = formValidate();
 
@@ -48,20 +45,20 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     const { email, password } = data;
-    console.log(email, password);
-
     try {
+      setLoading(true);
       await registerUser(email, password);
-      console.log('Usuario creado');
       navigate('/');
     } catch (error) {
       //para saber los errores
-      console.log(error.code);
-      // alert('Este email ya está registrado');
+      // console.log(error.code);
+      console.error('error');
       const { code, message } = erroresFirebase(error.code);
       setError(code, {
         message,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,7 +131,7 @@ const Register = () => {
         </FormInput>
         {/* {errors.repassword && <p>{errors.repassword.message}</p>} */}
 
-        <Button text="Registrar" type="submit" />
+        <Button text="Registrar" type="submit" loading={loading} />
       </form>
     </>
   );
