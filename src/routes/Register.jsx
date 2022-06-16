@@ -15,7 +15,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { registerUser } = useContext(UserContext);
+  const { registerUser, sendVerificationMessage } = useContext(UserContext);
 
   // https://react-hook-form.com/api/
   const {
@@ -44,15 +44,19 @@ const Register = () => {
   // };
 
   const onSubmit = async (data) => {
-    const { email, password } = data;
+    const { email, password, repassword } = data;
     try {
+      if (password !== repassword) {
+        setError('repassword', { message: "Passwords don't match" });
+        return;
+      }
       setLoading(true);
       await registerUser(email, password);
+      await sendVerificationMessage();
       navigate('/');
     } catch (error) {
       //para saber los errores
-      // console.log(error.code);
-      console.error('error');
+      // console.log(error.message);
       const { code, message } = erroresFirebase(error.code);
       setError(code, {
         message,
@@ -98,6 +102,7 @@ const Register = () => {
           placeholder=" "
           label="Tu password"
           error={errors.password}
+          eyeButton={true}
           {...register('password', {
             required,
             minLength: minLength_6,
@@ -122,9 +127,11 @@ const Register = () => {
           placeholder=" "
           label="Confirmar su password"
           error={errors.repassword}
+          eyeButton={true}
           {...register('repassword', {
             required,
-            validate: validateEquals(getValues('password')),
+            validate: validateTrim,
+            // validate: validateEquals(getValues('password')),
           })}
         >
           <FormError error={errors.repassword}></FormError>

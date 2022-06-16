@@ -12,6 +12,7 @@
     "flowbite": "^1.4.7",
     "flowbite-react": "^0.0.25",
     "nanoid": "^4.0.0",
+    "query-string": "^7.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.32.0",

@@ -13,7 +13,8 @@ const Home = () => {
   const [editUrlNanoid, setEditUrlNanoid] = useState('');
   const [copied, setCopied] = useState({});
 
-  const { data, error, loading, getData, addData, deleteData, updateData } = useFireStore();
+  const { data, error, loading, getData, addData, deleteData, updateData, userInfo } =
+    useFireStore();
 
   const {
     register,
@@ -88,7 +89,7 @@ const Home = () => {
         <FormInput
           type="text"
           placeholder="ex: https://youtube.com"
-          label="Ingresa una url"
+          label="Enter a url"
           //https://react-hook-form.com/api/useform/register
           {...register('url', {
             required,
@@ -96,7 +97,7 @@ const Home = () => {
           })}
           error={errors.url}
         >
-          <FormError error={errors.email}></FormError>
+          <FormError error={errors.url}></FormError>
         </FormInput>
 
         {editUrlNanoid ? (

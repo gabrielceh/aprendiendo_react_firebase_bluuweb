@@ -2,28 +2,28 @@ export const formValidate = () => {
   return {
     required: {
       value: true,
-      message: 'Campo obligatorio',
+      message: 'Required field',
     },
     patternEmail: {
       value: /^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$/,
-      message: 'Formato de email incorrecto',
+      message: 'Wrong email format',
     },
     patternUrl: {
       value: /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/,
-      message: 'Formato de url incorrecto',
+      message: 'Wrong url format',
     },
     minLength_6: {
       value: 6,
       message: 'Mínimo 6 carácteres',
     },
     validateTrim: {
-      trim: (value) => (!value.trim() ? 'Campo vacio. Escribe algo' : true),
+      trim: (value) => (!value.trim() ? 'Empty field. Write something' : true),
     },
     validateEquals(valueField) {
       return {
         // https://react-hook-form.com/api/useform/getvalues
-        equals: (value) => value === valueField || 'No coincien las contraseñas',
-        trim: (value) => (!value.trim() ? 'Campo vacio. Escribe algo' : true),
+        equals: (value) => value === valueField || "Passwords don't match",
+        // trim: (value) => (!value.trim() ? 'Empty field. Write something' : true),
       };
     },
   };

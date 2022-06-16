@@ -13,6 +13,7 @@ import LayoutRequireAuth from './components/layouts/LayoutRequireAuth';
 import LayoutContainerForm from './components/layouts/LayoutContainerForm';
 import Loading from './components/Loading';
 import LayoutRedirect from './components/layouts/LayoutRedirect';
+import EditProfile from './routes/EditProfile';
 
 const App = () => {
   const { user } = useContext(UserContext);
@@ -36,9 +37,11 @@ const App = () => {
         /> */}
 
         {/*Rutas protegidas  */}
+        {/* Esto es por si dos elementos compartiran el mismo layout */}
         <Route path="/" element={<LayoutRequireAuth />}>
           <Route index element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/edit-profile/" element={<EditProfile />} />
         </Route>
 
         {/* Esto es por si dos elementos compartiran el mismo layout */}

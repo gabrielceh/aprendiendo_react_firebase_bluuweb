@@ -53,7 +53,7 @@ const Login = () => {
         <FormInput
           type="email"
           placeholder="ex: juan@correo.com"
-          label="Ingresa tu email"
+          label="Your email"
           error={errors.email}
           //https://react-hook-form.com/api/useform/register
           {...register('email', {
@@ -67,8 +67,9 @@ const Login = () => {
         <FormInput
           type="password"
           placeholder=" "
-          label="Ingresa tu password"
+          label="Your Password"
           error={errors.password}
+          eyeButton={true}
           {...register('password', {
             required,
             minLength: minLength_6,

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { db, auth } from '../firebase';
+import { db, auth, storage } from '../firebase';
+import { updateProfile } from 'firebase/auth';
+import { getDownloadURL, ref, updateMetadata, uploadBytes } from 'firebase/storage';
 import {
   collection,
   doc,
@@ -22,6 +24,9 @@ export const useFireStore = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState({});
+  const [userInfo, setUserInfo] = useState({});
+
+  const user = auth.currentUser;
 
   // Creamos una funcion para obtener los datos
   const getData = async () => {
@@ -48,7 +53,19 @@ export const useFireStore = () => {
         ...doc.data(),
       }));
       // console.log(dataDB);
+      let userData = {};
+      if (user !== null) {
+        user.providerData.forEach((profile) => {
+          userData = {
+            displayName: profile.displayName,
+            email: profile.email,
+            photoUrl: profile.photoURL,
+          };
+        });
+      }
+      // console.log(userData);
       setData(dataDB);
+      setUserInfo({ ...userData });
     } catch (error) {
       console.log(error);
       setError(error.message);
@@ -132,5 +149,95 @@ export const useFireStore = () => {
     }
   };
 
-  return { data, error, loading, getData, addData, deleteData, updateData, searchData };
+  //Obtener perfil
+  // https://firebase.google.com/docs/auth/web/manage-users?hl=es&authuser=0#get_a_users_provider-specific_profile_information
+  const getProfile = async () => {
+    let userData = {};
+    try {
+      if (user !== null) {
+        user.providerData.forEach((profile) => {
+          userData = {
+            displayName: profile.displayName,
+            email: profile.email,
+            photoUrl: profile.photoURL,
+          };
+        });
+      }
+      // console.log(userData);
+      return userData;
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  //Subir fotos a storage
+  const uploadPhotoToStorage = async (file, metadata) => {
+    let photoUrl = '';
+    try {
+      //Asignamos nombre unico a la imagen
+      const nameImage = nanoid(10) + '_' + file.name;
+      // Obtenemos la referencia. profile hace ref a la carpeta donde se almacenaran en storage
+      // https://firebase.google.com/docs/storage/web/upload-files?hl=es#upload_files
+      const imageRef = ref(storage, `profile/${nameImage}`);
+      // GUardamos la imagen en storage
+      // https://firebase.google.com/docs/storage/web/upload-files?hl=es#upload_from_a_blob_or_file
+      await uploadBytes(imageRef, file);
+      //Obtenemos la url de la imageb
+      //https://firebase.google.com/docs/storage/web/download-files?hl=es#download_data_via_url
+      const url = await getDownloadURL(imageRef);
+      photoUrl = url;
+      //Cambiamos los metadatos
+      // https://firebase.google.com/docs/storage/web/file-metadata?hl=es#update_file_metadata
+      await updateMetadata(imageRef, metadata);
+
+      return photoUrl;
+    } catch (error) {
+      console.log(error);
+      setError({ message: error.message, code: error.code });
+    }
+  };
+
+  //Actualizar perfil
+  //https://firebase.google.com/docs/auth/web/manage-users?hl=es#update_a_users_profile
+  const updateUserProfile = async (newName, file = [], metadata = {}) => {
+    console.log(newName, file, metadata);
+    try {
+      setLoading((prev) => ({ ...prev, updateProfile: true }));
+      if (file.length <= 0) {
+        const newUpdataData = {
+          displayName: newName,
+        };
+        await updateProfile(user, newUpdataData);
+        return;
+      }
+
+      const newPhotoUrl = await uploadPhotoToStorage(file, metadata);
+      const newUpdataData = {
+        displayName: newName,
+        photoURL: newPhotoUrl,
+      };
+      await updateProfile(user, newUpdataData);
+      setUserInfo({ ...newUpdataData, email: user.email });
+    } catch (error) {
+      console.log(error);
+      setError({ message: error.message, code: error.code });
+    } finally {
+      setLoading((prev) => ({ ...prev, updateProfile: false }));
+    }
+  };
+
+  return {
+    data,
+    error,
+    loading,
+    getData,
+    addData,
+    deleteData,
+    updateData,
+    searchData,
+    userInfo,
+    getProfile,
+    updateUserProfile,
+    uploadPhotoToStorage,
+  };
 };
